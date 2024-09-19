@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DatabaseConnection {
+public class Database {
     //Alle attributen voor het verbinden naar mijn localhost database
     private static final String URL = "jdbc:postgresql://localhost:5433/ovchip";
     private static final String USERNAME = "postgres";
@@ -12,19 +12,11 @@ public class DatabaseConnection {
 
     private static Connection connection;
 
-    private DatabaseConnection() {}
+    private Database() {}
 
-    public static Connection getConnection() {
-        if (connection == null) {
-            try {
-                Class.forName("org.postgresql.Driver");
-                connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public static Connection getConnection() throws ClassNotFoundException, SQLException {
+        Class.forName("org.postgresql.Driver");
+        connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         return connection;
     }
 
