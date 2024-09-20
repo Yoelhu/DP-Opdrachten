@@ -1,22 +1,26 @@
 package org.example.p2;
 
-import org.example.p2.database.Database;
-import org.example.p2.database.ReizigerDAO;
-import org.example.p2.database.ReizigerDAOPsql;
+import org.example.p2.database.*;
 import org.example.p2.domain.Reiziger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(getConnection());
+        ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(getConnectionPSQL());
         testReizigerDAO(reizigerDAOPsql);
-        closeConnection();
+        closeConnectionPSQL();
+        System.out.println();
+        System.out.println("--------------------------- Hibernate ---------------------------");
+        System.out.println();
+        ReizigerDAOHibernate reizigerDAOHibernate = new ReizigerDAOHibernate(getHibernateSession());
+        testReizigerDAO(reizigerDAOHibernate);
+        closeSessionHibernate();
     }
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
@@ -32,7 +36,7 @@ public class Main {
                 System.out.println(r);
                 System.out.println("------------------------------");
             }
-        } catch (SQLException e) {
+        } catch (SQLException | HibernateException e) {
             throw new RuntimeException(e);
         }
 
@@ -47,7 +51,7 @@ public class Main {
             rdao.save(sietske);
             reizigers = rdao.findAll();
             System.out.println("[Test] Na ReizigerDAO.save(): " + reizigers.size() + " reizigers");
-        } catch (SQLException e){
+        } catch (SQLException | HibernateException e) {
             throw new RuntimeException(e);
         }
 
@@ -58,7 +62,7 @@ public class Main {
             System.out.println("[Test] ReizigerDAO.findById(77) geeft de volgende reiziger:");
             Reiziger reizigerToFind = rdao.findById(77);
             System.out.println(reizigerToFind);
-        } catch (SQLException e){
+        } catch (SQLException | HibernateException e) {
             throw new RuntimeException(e);
         }
 
@@ -73,7 +77,7 @@ public class Main {
             System.out.println("\n[Test] Reiziger na ReizigerDAO.update():");
             Reiziger reizigerToFind = rdao.findById(77);
             System.out.println(reizigerToFind);
-        } catch (SQLException e){
+        } catch (SQLException | HibernateException e) {
             throw new RuntimeException(e);
         }
 
@@ -113,7 +117,7 @@ public class Main {
                 System.out.println(r);
                 System.out.println("------------------------------");
             }
-        } catch (SQLException e){
+        } catch (SQLException | HibernateException e) {
             throw new RuntimeException(e);
         }
     }
@@ -123,7 +127,7 @@ public class Main {
         return " "+reiziger.getTussenvoegsel();
     }
 
-    private static Connection getConnection(){
+    private static Connection getConnectionPSQL(){
         Connection connection;
         try {
             connection = Database.getConnection();
@@ -135,11 +139,29 @@ public class Main {
         return connection;
     }
 
-    private static void closeConnection(){
+    private static void closeConnectionPSQL(){
         try {
             Database.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static Session getHibernateSession(){
+        Session session;
+        try {
+            session = HibernateSession.getSessionFactory().openSession();
+        } catch (HibernateException h) {
+            throw new RuntimeException(h);
+        }
+        return session;
+    }
+
+    private static void closeSessionHibernate(){
+        try {
+            HibernateSession.shutdown();
+        } catch (HibernateException h) {
+            throw new RuntimeException(h);
         }
     }
 }

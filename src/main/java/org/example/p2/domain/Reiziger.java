@@ -1,13 +1,25 @@
 package org.example.p2.domain;
 
+
+import jakarta.persistence.*;
+
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "reiziger")
 public class Reiziger {
+
+    @Id
+    @Column(name = "reiziger_id")
     private int id;
+
     private String voorletters;
     private String tussenvoegsel;
     private String achternaam;
     private LocalDate geboortedatum;
+
+    public Reiziger(){}
 
     public Reiziger(
             int id,
