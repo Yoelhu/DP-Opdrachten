@@ -1,6 +1,7 @@
-package org.example.p2.database;
+package org.example.p3.database.postgresql;
 
-import org.example.p2.domain.Reiziger;
+import org.example.p3.database.interfaces.ReizigerDAO;
+import org.example.p3.domain.Reiziger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ReizigerDAOPsql implements ReizigerDAO {
@@ -36,11 +36,11 @@ public class ReizigerDAOPsql implements ReizigerDAO {
 
     @Override
     public Boolean update(Reiziger reiziger) throws SQLException {
-        String query = "UPDATE reiziger SET" +
-                "voorletters = ?" +
-                "tussenvoegsel = ?" +
-                "achternaam = ?" +
-                "geboortedatum = ?" +
+        String query = "UPDATE reiziger SET " +
+                "voorletters = ?," +
+                "tussenvoegsel = ?," +
+                "achternaam = ?," +
+                "geboortedatum = ? " +
                 "WHERE reiziger_id = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -74,8 +74,6 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
             reiziger = mapResultSetToReiziger(resultSet);
-        } else {
-            System.out.println("Geen reiziger gevonden met ID: "+id);
         }
 
         return reiziger;

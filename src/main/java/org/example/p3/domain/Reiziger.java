@@ -1,4 +1,4 @@
-package org.example.p2.domain;
+package org.example.p3.domain;
 
 
 import jakarta.persistence.*;
@@ -6,18 +6,21 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "reiziger")
+//@Entity
+//@Table(name = "reiziger")
 public class Reiziger {
 
-    @Id
-    @Column(name = "reiziger_id")
+//    @Id
+//    @Column(name = "reiziger_id")
     private int id;
 
     private String voorletters;
     private String tussenvoegsel;
     private String achternaam;
     private LocalDate geboortedatum;
+
+//    @OneToOne
+    private Adres adres;
 
     public Reiziger(){}
 

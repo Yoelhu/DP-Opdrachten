@@ -1,4 +1,4 @@
-package org.example.p2.database;
+package org.example.p3.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

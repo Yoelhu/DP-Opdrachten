@@ -12,6 +12,7 @@
         <property name="hibernate.show_sql">false</property>
         <property name="hibernate.format_sql">false</property>
 
-        <mapping class="org.example.p2.domain.Reiziger"/>
+        <mapping class="org.example.p3.domain.Reiziger"/>
+        <mapping class="org.example.p3.domain.Adres"/>
     </session-factory>
 </hibernate-configuration>

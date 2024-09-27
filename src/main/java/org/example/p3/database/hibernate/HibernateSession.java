@@ -1,4 +1,4 @@
-package org.example.p2.database;
+package org.example.p3.database.hibernate;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;

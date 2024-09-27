@@ -1,10 +1,9 @@
-package org.example.p2.database;
+package org.example.p3.database.interfaces;
 
-import org.example.p2.domain.Reiziger;
+import org.example.p3.domain.Reiziger;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public interface ReizigerDAO {

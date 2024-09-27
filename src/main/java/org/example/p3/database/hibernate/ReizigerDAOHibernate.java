@@ -1,13 +1,14 @@
-package org.example.p2.database;
+package org.example.p3.database.hibernate;
 
-import org.example.p2.domain.Reiziger;
+import org.example.p3.database.interfaces.ReizigerDAO;
+import org.example.p3.domain.Reiziger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class ReizigerDAOHibernate implements ReizigerDAO{
+public class ReizigerDAOHibernate implements ReizigerDAO {
 
     private Session session;
 
