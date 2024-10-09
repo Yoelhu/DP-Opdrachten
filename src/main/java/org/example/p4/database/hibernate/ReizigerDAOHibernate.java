@@ -1,7 +1,7 @@
-package org.example.p3.database.hibernate;
+package org.example.p4.database.hibernate;
 
-import org.example.p3.database.interfaces.ReizigerDAO;
-import org.example.p3.domain.Reiziger;
+import org.example.p4.database.interfaces.ReizigerDAO;
+import org.example.p4.domain.Reiziger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 

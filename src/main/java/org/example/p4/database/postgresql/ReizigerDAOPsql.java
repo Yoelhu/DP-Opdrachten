@@ -1,7 +1,9 @@
-package org.example.p3.database.postgresql;
+package org.example.p4.database.postgresql;
 
-import org.example.p3.database.interfaces.ReizigerDAO;
-import org.example.p3.domain.Reiziger;
+import org.example.p4.database.interfaces.OVChipkaartDAO;
+import org.example.p4.database.interfaces.ReizigerDAO;
+import org.example.p4.domain.OVChipkaart;
+import org.example.p4.domain.Reiziger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,6 +32,13 @@ public class ReizigerDAOPsql implements ReizigerDAO {
         preparedStatement.setString(4, reiziger.getAchternaam());
         preparedStatement.setDate(5, java.sql.Date.valueOf(reiziger.getGeboortedatum()));
         preparedStatement.executeUpdate();
+
+        if (!reiziger.getOvChipkaarten().isEmpty()){
+            OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOPsql(connection);
+            for (OVChipkaart ovChipkaart : reiziger.getOvChipkaarten()){
+                ovChipkaartDAO.save(ovChipkaart);
+            }
+        }
 
         return true;
     }

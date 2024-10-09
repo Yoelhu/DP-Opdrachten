@@ -1,10 +1,8 @@
-package org.example.p3.domain;
-
-
-import jakarta.persistence.*;
+package org.example.p4.domain;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 //@Entity
 //@Table(name = "reiziger")
@@ -21,6 +19,8 @@ public class Reiziger {
 
 //    @OneToOne
     private Adres adres;
+
+    private ArrayList<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
     public Reiziger(){}
 
@@ -77,10 +77,22 @@ public class Reiziger {
         this.geboortedatum = geboortedatum;
     }
 
-    public String toString(){
-        if (tussenvoegsel == null || tussenvoegsel.isEmpty()){
-            return "Reiziger: "+voorletters+". "+achternaam+"\nID: "+id+"\nGeboortedatum: "+geboortedatum;
-        }
-        return "Reiziger: "+voorletters+". "+tussenvoegsel+" "+achternaam+"\nID: "+id+"\nGeboortedatum: "+geboortedatum;
+    public ArrayList<OVChipkaart> getOvChipkaarten() {
+        return ovChipkaarten;
+    }
+
+    public void addOVChipKaart(OVChipkaart ovChipkaart){
+        ovChipkaarten.add(ovChipkaart);
+    }
+
+    @Override
+    public String toString() {
+        return "Reiziger{" +
+                "id=" + id +
+                ", voorletters='" + voorletters + '\'' +
+                ", tussenvoegsel='" + tussenvoegsel + '\'' +
+                ", achternaam='" + achternaam + '\'' +
+                ", geboortedatum=" + geboortedatum +
+                '}';
     }
 }

@@ -1,6 +1,4 @@
-package org.example.p3.domain;
-
-import jakarta.persistence.*;
+package org.example.p4.domain;
 
 //@Entity
 //@Table(name = "adres")

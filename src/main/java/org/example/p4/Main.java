@@ -1,14 +1,15 @@
-package org.example.p3;
+package org.example.p4;
 
-import org.example.p3.database.*;
-import org.example.p3.database.hibernate.HibernateSession;
-import org.example.p3.database.hibernate.ReizigerDAOHibernate;
-import org.example.p3.database.interfaces.AdresDAO;
-import org.example.p3.database.interfaces.ReizigerDAO;
-import org.example.p3.database.postgresql.AdresDAOPsql;
-import org.example.p3.database.postgresql.ReizigerDAOPsql;
-import org.example.p3.domain.Adres;
-import org.example.p3.domain.Reiziger;
+import org.example.p4.database.*;
+import org.example.p4.database.hibernate.HibernateSession;
+import org.example.p4.database.interfaces.AdresDAO;
+import org.example.p4.database.interfaces.OVChipkaartDAO;
+import org.example.p4.database.interfaces.ReizigerDAO;
+import org.example.p4.database.postgresql.OVChipkaartDAOPsql;
+import org.example.p4.database.postgresql.ReizigerDAOPsql;
+import org.example.p4.domain.Adres;
+import org.example.p4.domain.OVChipkaart;
+import org.example.p4.domain.Reiziger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -19,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
-        testAdresDAO(new AdresDAOPsql(getConnectionPSQL()), new ReizigerDAOPsql(getConnectionPSQL()));
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        testOVChipkaartDAO(new ReizigerDAOPsql(getConnectionPSQL()), new OVChipkaartDAOPsql(getConnectionPSQL()));
+        closeConnectionPSQL();
     }
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
@@ -28,7 +30,6 @@ public class Main {
 
         // Haal alle reizigers op uit de database
         List<Reiziger> reizigers = new ArrayList<>();
-        try {
             reizigers = rdao.findAll();
             System.out.println("[Test] ReizigerDAO.findAll() geeft de volgende reizigers:");
             System.out.println("------------------------------");
@@ -36,56 +37,44 @@ public class Main {
                 System.out.println(r);
                 System.out.println("------------------------------");
             }
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
 
         System.out.println("\n-----------------------------------------------------------------\n");
 
         // Maak een nieuwe reiziger aan en persisteer deze in de database
         Reiziger sietske = null;
-        try {
             String gbdatum = "1981-03-14";
             sietske = new Reiziger(77, "S", "", "Boers", LocalDate.parse(gbdatum));
             System.out.println("[Test] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save()\n");
             rdao.save(sietske);
             reizigers = rdao.findAll();
             System.out.println("[Test] Na ReizigerDAO.save(): " + reizigers.size() + " reizigers");
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
 
         System.out.println("\n-----------------------------------------------------------------\n");
 
         // Een reiziger ophalen door middel van een id (id 77 = Sietske)
-        try {
-            System.out.println("[Test] ReizigerDAO.findById(77) geeft de volgende reiziger:");
-            Reiziger reizigerToFind = rdao.findById(77);
-            System.out.println(reizigerToFind);
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
+        System.out.println("[Test] ReizigerDAO.findById(77) geeft de volgende reiziger:");
+        Reiziger reizigerToFind = rdao.findById(77);
+        System.out.println(reizigerToFind);
 
         System.out.println("\n-----------------------------------------------------------------\n");
 
         // Update een bestaande reiziger
 
-        try {
+
             System.out.println("[Test] Reiziger voor ReizigerDAO.update():");
             System.out.println(sietske);
             sietske.setGeboortedatum(LocalDate.parse("1981-03-15"));
             System.out.println("\n[Test] Reiziger na ReizigerDAO.update():");
-            Reiziger reizigerToFind = rdao.findById(77);
+            reizigerToFind = rdao.findById(77);
             System.out.println(reizigerToFind);
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
 
 
         System.out.println("\n-----------------------------------------------------------------\n");
 
         // Delete een bestaande reiziger (id 77 = Sietske)
-        try {
             System.out.println("[Test] Lijst van reizigers voor ReizigerDAO.delete():");
             List<Reiziger> reizigerList2 = rdao.findAll();
             for (Reiziger reiziger : reizigerList2) {
@@ -117,9 +106,7 @@ public class Main {
                 System.out.println(r);
                 System.out.println("------------------------------");
             }
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private static void testAdresDAO(AdresDAO adao, ReizigerDAO rdao) throws SQLException {
@@ -144,7 +131,7 @@ public class Main {
         // Maak een nieuw adres aan en persisteer deze in de database
         Reiziger nieuweReiziger = null;
         Adres nieuwAdres = null;
-        try {
+
             String gbdatum = "1981-03-14";
             nieuweReiziger = new Reiziger(77, "S", "", "Boers", LocalDate.parse(gbdatum));
             rdao.save(nieuweReiziger);
@@ -153,26 +140,22 @@ public class Main {
             adao.save(nieuwAdres);
             adressen = adao.findAll();
             System.out.println("[Test] Na AdresDAO.save(): " + adressen.size() + " adressen");
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
 
         System.out.println("\n-----------------------------------------------------------------\n");
 
         // Een adres ophalen door middel van de reiziger_id
-        try {
+
             System.out.println("[Test] AdresDAO.findByReiziger(nieuwAdres) geeft het volgende adres:");
             Adres adresToFind = adao.findByReiziger(nieuweReiziger);
             System.out.println(adresToFind);
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
 
         System.out.println("\n-----------------------------------------------------------------\n");
 
         // Update een bestaande adres
 
-        try {
+
             System.out.println("[Test] Adres voor AdresDAO.update():");
             System.out.println(nieuwAdres);
             nieuwAdres.setPostcode("5678CD");
@@ -181,17 +164,15 @@ public class Main {
             nieuwAdres.setWoonplaats("Utrecht");
             adao.update(nieuwAdres);
             System.out.println("\n[Test] Adres na AdresDAO.update():");
-            Adres adresToFind = adao.findByReiziger(nieuweReiziger);
+            adresToFind = adao.findByReiziger(nieuweReiziger);
             System.out.println(adresToFind);
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
 
 
         System.out.println("\n-----------------------------------------------------------------\n");
 
         // Delete een bestaand adres (id 77 = Sietske)
-        try {
+
             System.out.println("[Test] Lijst van adressen voor AdresDAO.delete():");
             List<Adres> adressenList2 = adao.findAll();
             for (Adres adres : adressenList2) {
@@ -206,12 +187,10 @@ public class Main {
                 System.out.println(adres);
                 System.out.println();
             }
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
-        }
+
 
         //Reizigers + Adressen
-        try {
+
             for (Reiziger reiziger : rdao.findAll()){
                 Adres reizigerAdres = adao.findByReiziger(reiziger);
                 String formattedReiziger = "Reiziger {#%d %s.%s %s, geb. %s, Adres {#%d %s-%s}}".formatted(
@@ -226,9 +205,52 @@ public class Main {
                 );
                 System.out.println(formattedReiziger);
             }
-        } catch (SQLException | HibernateException e) {
-            e.printStackTrace();
+
+    }
+
+    private static void testOVChipkaartDAO(ReizigerDAO reizigerDAO, OVChipkaartDAO ovChipkaartDAO) throws SQLException {
+        System.out.println("------------- Test OVChipkaartDAO -------------");
+        System.out.println("FindAll():");
+        for (OVChipkaart ovChipkaart : ovChipkaartDAO.findAll()) {
+            System.out.println(ovChipkaart);
         }
+
+        //save()
+        Reiziger reiziger = new Reiziger(100, "Y", "el", "Ouamari", LocalDate.parse("2003-06-20"));
+        OVChipkaart nieuweOvChipkaart = new OVChipkaart(99999, LocalDate.parse("2025-07-15"), 1, 20, reiziger);
+        reiziger.addOVChipKaart(nieuweOvChipkaart);
+        reizigerDAO.save(reiziger);
+
+        System.out.println("\nFindByReiziger():");
+        //krijg de ov chipkaarten van een reiziger terug
+        ArrayList<OVChipkaart> ovChipkaarten = ovChipkaartDAO.findByReiziger(reiziger);
+        for (OVChipkaart ovChipkaart : ovChipkaarten){
+            System.out.println(ovChipkaart);
+        }
+
+
+        System.out.println("\nUpdate():");
+        System.out.println("Saldo voor update:");
+        System.out.println(nieuweOvChipkaart.getSaldo());
+        System.out.println("Saldo na update:");
+        nieuweOvChipkaart.setSaldo(50);
+        ovChipkaartDAO.update(nieuweOvChipkaart);
+        ArrayList<OVChipkaart> ovChipkaarten2 = ovChipkaartDAO.findByReiziger(reiziger);
+        for (OVChipkaart ovChipkaart : ovChipkaarten2){
+            System.out.println(ovChipkaart.getSaldo());
+        }
+
+
+        System.out.println("\nDelete():");
+        System.out.println("Voor delete:");
+        System.out.println(nieuweOvChipkaart);
+        ovChipkaartDAO.delete(nieuweOvChipkaart);
+        ArrayList<OVChipkaart> ovChipkaarten3 = ovChipkaartDAO.findByReiziger(reiziger);
+        System.out.println("Na delete:");
+        if (ovChipkaarten3.isEmpty()){
+            System.out.println(reiziger.getVoorletters()+". "+reiziger.getTussenvoegsel()+" "+reiziger.getAchternaam()+" heeft geen ov chipkaart(en)");
+        }
+        reizigerDAO.delete(reiziger);
     }
 
     private static String tussenvoegselCheck(Reiziger reiziger){
@@ -236,41 +258,23 @@ public class Main {
         return " "+reiziger.getTussenvoegsel();
     }
 
-    private static Connection getConnectionPSQL(){
-        Connection connection = null;
-        try {
-            connection = Database.getConnection();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private static Connection getConnectionPSQL() throws SQLException, ClassNotFoundException {
+        Connection connection;
+        connection = Database.getConnection();
         return connection;
     }
 
-    private static void closeConnectionPSQL(){
-        try {
-            Database.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    private static void closeConnectionPSQL() throws SQLException {
+        Database.closeConnection();
     }
 
-    private static Session getHibernateSession(){
+    private static Session getHibernateSession() throws HibernateException {
         Session session = null;
-        try {
-            session = HibernateSession.getSessionFactory().openSession();
-        } catch (HibernateException h) {
-            h.printStackTrace();
-        }
+        session = HibernateSession.getSessionFactory().openSession();
         return session;
     }
 
-    private static void closeSessionHibernate(){
-        try {
-            HibernateSession.shutdown();
-        } catch (HibernateException h) {
-            h.printStackTrace();
-        }
+    private static void closeSessionHibernate() throws HibernateException{
+        HibernateSession.shutdown();
     }
 }

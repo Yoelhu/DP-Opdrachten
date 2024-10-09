@@ -1,8 +1,8 @@
-package org.example.p3.database.postgresql;
+package org.example.p4.database.postgresql;
 
-import org.example.p3.database.interfaces.AdresDAO;
-import org.example.p3.domain.Adres;
-import org.example.p3.domain.Reiziger;
+import org.example.p4.database.interfaces.AdresDAO;
+import org.example.p4.domain.Adres;
+import org.example.p4.domain.Reiziger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
