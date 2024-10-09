@@ -1,15 +1,18 @@
-package org.example.p4.domain;
+package org.example.p4h.domain;
 
+
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
-//@Entity
-//@Table(name = "reiziger")
+@Entity
+@Table(name = "reiziger")
 public class Reiziger {
 
-//    @Id
-//    @Column(name = "reiziger_id")
+    @Id
+    @Column(name = "reiziger_id")
     private int id;
 
     private String voorletters;
@@ -18,9 +21,10 @@ public class Reiziger {
     private LocalDate geboortedatum;
 
 //    @OneToOne
-    private Adres adres;
+//    private Adres adres;
 
-    private ArrayList<OVChipkaart> ovChipkaarten = new ArrayList<>();
+    @OneToMany(mappedBy = "reiziger", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
     public Reiziger(){}
 
@@ -77,7 +81,7 @@ public class Reiziger {
         this.geboortedatum = geboortedatum;
     }
 
-    public ArrayList<OVChipkaart> getOvChipkaarten() {
+    public List<OVChipkaart> getOvChipkaarten() {
         return ovChipkaarten;
     }
 

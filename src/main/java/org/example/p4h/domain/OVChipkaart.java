@@ -1,12 +1,21 @@
-package org.example.p4.domain;
+package org.example.p4h.domain;
+
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "ov_chipkaart")
 public class OVChipkaart {
+
+    @Id
     private int kaart_nummer;
     private LocalDate geldig_tot;
     private int klasse;
     private int saldo;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "reiziger_id")
     private Reiziger reiziger;
 
     public OVChipkaart(int kaart_nummer, LocalDate geldig_tot, int klasse, int saldo, Reiziger reiziger){
@@ -15,6 +24,10 @@ public class OVChipkaart {
         this.klasse = klasse;
         this.saldo = saldo;
         this.reiziger = reiziger;
+    }
+
+    public OVChipkaart() {
+
     }
 
     public int getKaart_nummer() {

@@ -12,7 +12,8 @@
         <property name="hibernate.show_sql">false</property>
         <property name="hibernate.format_sql">false</property>
 
-        <mapping class="org.example.p4.domain.Reiziger"/>
-        <mapping class="org.example.p4.domain.Adres"/>
+        <mapping class="org.example.p4h.domain.Reiziger"/>
+        <mapping class="org.example.p4h.domain.Adres"/>
+        <mapping class="org.example.p4h.domain.OVChipkaart"/>
     </session-factory>
 </hibernate-configuration>

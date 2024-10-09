@@ -1,15 +1,15 @@
-package org.example.p4;
+package org.example.p4h;
 
-import org.example.p4.database.*;
-import org.example.p4.database.hibernate.HibernateSession;
-import org.example.p4.database.interfaces.AdresDAO;
-import org.example.p4.database.interfaces.OVChipkaartDAO;
-import org.example.p4.database.interfaces.ReizigerDAO;
-import org.example.p4.database.postgresql.OVChipkaartDAOPsql;
-import org.example.p4.database.postgresql.ReizigerDAOPsql;
-import org.example.p4.domain.Adres;
-import org.example.p4.domain.OVChipkaart;
-import org.example.p4.domain.Reiziger;
+import org.example.p4h.database.*;
+import org.example.p4h.database.hibernate.HibernateSession;
+import org.example.p4h.database.hibernate.OVChipkaartDAOHibernate;
+import org.example.p4h.database.hibernate.ReizigerDAOHibernate;
+import org.example.p4h.database.interfaces.AdresDAO;
+import org.example.p4h.database.interfaces.OVChipkaartDAO;
+import org.example.p4h.database.interfaces.ReizigerDAO;
+import org.example.p4h.domain.Adres;
+import org.example.p4h.domain.OVChipkaart;
+import org.example.p4h.domain.Reiziger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -21,8 +21,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        testOVChipkaartDAO(new ReizigerDAOPsql(getConnectionPSQL()), new OVChipkaartDAOPsql(getConnectionPSQL()));
-        closeConnectionPSQL();
+        testOVChipkaartDAO(new ReizigerDAOHibernate(getHibernateSession()), new OVChipkaartDAOHibernate(getHibernateSession()));
+        closeSessionHibernate();
     }
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
@@ -218,12 +218,11 @@ public class Main {
         //save()
         Reiziger reiziger = new Reiziger(100, "Y", "el", "Ouamari", LocalDate.parse("2003-06-20"));
         OVChipkaart nieuweOvChipkaart = new OVChipkaart(99999, LocalDate.parse("2025-07-15"), 1, 20, reiziger);
-        reiziger.addOVChipKaart(nieuweOvChipkaart);
-        reizigerDAO.save(reiziger);
+        ovChipkaartDAO.save(nieuweOvChipkaart);
 
         System.out.println("\nFindByReiziger():");
         //krijg de ov chipkaarten van een reiziger terug
-        ArrayList<OVChipkaart> ovChipkaarten = ovChipkaartDAO.findByReiziger(reiziger);
+        List<OVChipkaart> ovChipkaarten = ovChipkaartDAO.findByReiziger(reiziger);
         for (OVChipkaart ovChipkaart : ovChipkaarten){
             System.out.println(ovChipkaart);
         }
@@ -235,7 +234,7 @@ public class Main {
         System.out.println("Saldo na update:");
         nieuweOvChipkaart.setSaldo(50);
         ovChipkaartDAO.update(nieuweOvChipkaart);
-        ArrayList<OVChipkaart> ovChipkaarten2 = ovChipkaartDAO.findByReiziger(reiziger);
+        List<OVChipkaart> ovChipkaarten2 = ovChipkaartDAO.findByReiziger(reiziger);
         for (OVChipkaart ovChipkaart : ovChipkaarten2){
             System.out.println(ovChipkaart.getSaldo());
         }
@@ -245,7 +244,7 @@ public class Main {
         System.out.println("Voor delete:");
         System.out.println(nieuweOvChipkaart);
         ovChipkaartDAO.delete(nieuweOvChipkaart);
-        ArrayList<OVChipkaart> ovChipkaarten3 = ovChipkaartDAO.findByReiziger(reiziger);
+        List<OVChipkaart> ovChipkaarten3 = ovChipkaartDAO.findByReiziger(reiziger);
         System.out.println("Na delete:");
         if (ovChipkaarten3.isEmpty()){
             System.out.println(reiziger.getVoorletters()+". "+reiziger.getTussenvoegsel()+" "+reiziger.getAchternaam()+" heeft geen ov chipkaart(en)");

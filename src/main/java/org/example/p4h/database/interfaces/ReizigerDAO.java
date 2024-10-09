@@ -1,6 +1,6 @@
-package org.example.p4.database.interfaces;
+package org.example.p4h.database.interfaces;
 
-import org.example.p4.domain.Reiziger;
+import org.example.p4h.domain.Reiziger;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
