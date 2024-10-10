@@ -1,18 +1,16 @@
-package org.example.p4h.domain;
+package org.example.p5.domain;
 
-
-import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "reiziger")
+//@Entity
+//@Table(name = "reiziger")
 public class Reiziger {
 
-    @Id
-    @Column(name = "reiziger_id")
+//    @Id
+//    @Column(name = "reiziger_id")
     private int id;
 
     private String voorletters;
@@ -23,7 +21,7 @@ public class Reiziger {
 //    @OneToOne
 //    private Adres adres;
 
-    @OneToMany(mappedBy = "reiziger", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//    @OneToMany(mappedBy = "reiziger", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<OVChipkaart> ovChipkaarten = new ArrayList<>();
 
     public Reiziger(){}

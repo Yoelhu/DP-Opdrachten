@@ -1,22 +1,24 @@
-package org.example.p4h.domain;
-
-import jakarta.persistence.*;
+package org.example.p5.domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
-@Table(name = "ov_chipkaart")
+//@Entity
+//@Table(name = "ov_chipkaart")
 public class OVChipkaart {
 
-    @Id
+//    @Id
     private int kaart_nummer;
     private LocalDate geldig_tot;
     private int klasse;
     private int saldo;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "reiziger_id")
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "reiziger_id")
     private Reiziger reiziger;
+
+    private List<Product> producten = new ArrayList<>();
 
     public OVChipkaart(int kaart_nummer, LocalDate geldig_tot, int klasse, int saldo, Reiziger reiziger){
         this.kaart_nummer = kaart_nummer;
@@ -68,6 +70,27 @@ public class OVChipkaart {
 
     public void setReiziger(Reiziger reiziger) {
         this.reiziger = reiziger;
+    }
+
+    public List<Product> getProducten() {
+        return producten;
+    }
+
+    public void setProducten(List<Product> producten) {
+        this.producten = producten;
+    }
+
+    public void addProduct(Product product) {
+        if (!producten.contains(product)) {
+            producten.add(product);
+            product.getOvChipkaarten().add(this);
+        }
+    }
+
+    public void removeProduct(Product product) {
+        if (producten.contains(product)) {
+            producten.remove(product);
+        }
     }
 
     @Override

@@ -1,8 +1,9 @@
-package org.example.p4h.database.postgresql;
+package org.example.p5.database.postgresql;
 
-import org.example.p4h.database.interfaces.OVChipkaartDAO;
-import org.example.p4h.domain.OVChipkaart;
-import org.example.p4h.domain.Reiziger;
+import org.example.p5.database.interfaces.OVChipkaartDAO;
+import org.example.p5.domain.OVChipkaart;
+import org.example.p5.domain.Product;
+import org.example.p5.domain.Reiziger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +32,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         preparedStatement.setInt(5, ovChipkaart.getReiziger().getId());
         preparedStatement.executeUpdate();
 
+        if (!ovChipkaart.getProducten().isEmpty()){
+            ProductDAOPsql productDAOPsql = new ProductDAOPsql(connection);
+            for (Product product : ovChipkaart.getProducten()) {
+                productDAOPsql.save(product);
+            }
+        }
+
         return true;
     }
 
@@ -51,6 +59,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         preparedStatement.setInt(5, ovChipkaart.getKaart_nummer());
         preparedStatement.executeUpdate();
 
+        if(!ovChipkaart.getProducten().isEmpty()){
+            ProductDAOPsql productDAOPsql = new ProductDAOPsql(connection);
+            for (Product product : ovChipkaart.getProducten()) {
+                productDAOPsql.update(product);
+            }
+        }
+
         return true;
     }
 
@@ -60,6 +75,13 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, ovChipkaart.getKaart_nummer());
         preparedStatement.executeUpdate();
+
+        if(!ovChipkaart.getProducten().isEmpty()){
+            ProductDAOPsql productDAOPsql = new ProductDAOPsql(connection);
+            for (Product product : ovChipkaart.getProducten()) {
+                productDAOPsql.delete(product);
+            }
+        }
 
         return true;
     }

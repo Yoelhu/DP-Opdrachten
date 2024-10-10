@@ -1,9 +1,9 @@
-package org.example.p4h.database.postgresql;
+package org.example.p5.database.postgresql;
 
-import org.example.p4h.database.interfaces.OVChipkaartDAO;
-import org.example.p4h.database.interfaces.ReizigerDAO;
-import org.example.p4h.domain.OVChipkaart;
-import org.example.p4h.domain.Reiziger;
+import org.example.p5.database.interfaces.OVChipkaartDAO;
+import org.example.p5.database.interfaces.ReizigerDAO;
+import org.example.p5.domain.OVChipkaart;
+import org.example.p5.domain.Reiziger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

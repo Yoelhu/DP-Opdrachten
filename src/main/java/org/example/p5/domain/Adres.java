@@ -1,4 +1,4 @@
-package org.example.p4h.domain;
+package org.example.p5.domain;
 
 //@Entity
 //@Table(name = "adres")

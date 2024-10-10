@@ -1,15 +1,18 @@
-package org.example.p4h;
+package org.example.p5;
 
-import org.example.p4h.database.*;
-import org.example.p4h.database.hibernate.HibernateSession;
-import org.example.p4h.database.hibernate.OVChipkaartDAOHibernate;
-import org.example.p4h.database.hibernate.ReizigerDAOHibernate;
-import org.example.p4h.database.interfaces.AdresDAO;
-import org.example.p4h.database.interfaces.OVChipkaartDAO;
-import org.example.p4h.database.interfaces.ReizigerDAO;
-import org.example.p4h.domain.Adres;
-import org.example.p4h.domain.OVChipkaart;
-import org.example.p4h.domain.Reiziger;
+import org.example.p5.database.*;
+import org.example.p5.database.hibernate.HibernateSession;
+import org.example.p5.database.interfaces.AdresDAO;
+import org.example.p5.database.interfaces.OVChipkaartDAO;
+import org.example.p5.database.interfaces.ProductDAO;
+import org.example.p5.database.interfaces.ReizigerDAO;
+import org.example.p5.database.postgresql.OVChipkaartDAOPsql;
+import org.example.p5.database.postgresql.ProductDAOPsql;
+import org.example.p5.database.postgresql.ReizigerDAOPsql;
+import org.example.p5.domain.Adres;
+import org.example.p5.domain.OVChipkaart;
+import org.example.p5.domain.Product;
+import org.example.p5.domain.Reiziger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -21,8 +24,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        testOVChipkaartDAO(new ReizigerDAOHibernate(getHibernateSession()), new OVChipkaartDAOHibernate(getHibernateSession()));
-        closeSessionHibernate();
+        testProductDAO(new OVChipkaartDAOPsql(getConnectionPSQL()),
+                new ProductDAOPsql(getConnectionPSQL()),
+                new ReizigerDAOPsql(getConnectionPSQL()));
+        closeConnectionPSQL();
     }
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
@@ -250,6 +255,49 @@ public class Main {
             System.out.println(reiziger.getVoorletters()+". "+reiziger.getTussenvoegsel()+" "+reiziger.getAchternaam()+" heeft geen ov chipkaart(en)");
         }
         reizigerDAO.delete(reiziger);
+    }
+
+    private static void testProductDAO(OVChipkaartDAO ovChipkaartDAO, ProductDAO productDAO, ReizigerDAO reizigerDAO) throws SQLException {
+        System.out.println("------------- Test OVChipkaartDAO -------------");
+        System.out.println("FindAll():");
+        for (Product product : productDAO.findAll()) {
+            System.out.println(product);
+        }
+
+
+        System.out.println("\nSave():");
+        Reiziger nieuweReiziger = new Reiziger(100, "Y", "el", "Ouamari", LocalDate.parse("2003-06-20"));
+        Product nieuwProduct = new Product(10, "Super Korting", "Als je rijk bent wordt je rijker", 100);
+        OVChipkaart nieuwOVChipkaart = new OVChipkaart(99999, LocalDate.parse("2050-01-01"), 2, 100, nieuweReiziger);
+        nieuwProduct.addOVChipkaart(nieuwOVChipkaart);
+        reizigerDAO.save(nieuweReiziger);
+        ovChipkaartDAO.save(nieuwOVChipkaart);
+        productDAO.save(nieuwProduct);
+        System.out.println(productDAO.findById(nieuwProduct));
+
+        System.out.println("\nFindById()");
+        System.out.println(productDAO.findById(nieuwProduct));
+
+        System.out.println("\nFindByOVChipKaart()");
+        System.out.println(productDAO.findByOvChipkaart(nieuwOVChipkaart));
+
+        System.out.println("\nUpdate():");
+        System.out.println("Product prijs voor update:");
+        System.out.println(nieuwProduct.getPrijs());
+        nieuwProduct.setPrijs(200);
+        productDAO.update(nieuwProduct);
+        System.out.println("Product prijs na update:");
+        System.out.println(productDAO.findById(nieuwProduct).getPrijs());
+
+        System.out.println("\nDelete():");
+        System.out.println("Product list size before delete:");
+        System.out.println(productDAO.findAll().size());
+        productDAO.delete(nieuwProduct);
+        System.out.println("Product list size after delete:");
+        System.out.println(productDAO.findAll().size());
+
+        ovChipkaartDAO.delete(nieuwOVChipkaart);
+        reizigerDAO.delete(nieuweReiziger);
     }
 
     private static String tussenvoegselCheck(Reiziger reiziger){
