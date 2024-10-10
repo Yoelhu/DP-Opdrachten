@@ -115,6 +115,21 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO {
         return ovChipkaarten;
     }
 
+    @Override
+    public OVChipkaart findById(int id) throws SQLException {
+        String query = "SELECT * FROM ov_chipkaart WHERE kaart_nummer = ?";
+        OVChipkaart ovChipkaartToFind = null;
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            ovChipkaartToFind = mapResultSetToOVChipkaart(resultSet);
+        }
+
+        return ovChipkaartToFind;
+    }
+
     private OVChipkaart mapResultSetToOVChipkaart(ResultSet resultSet) throws SQLException {
         ReizigerDAOPsql reizigerDAOPsql = new ReizigerDAOPsql(connection);
         Reiziger reiziger = reizigerDAOPsql.findById(resultSet.getInt("reiziger_id"));

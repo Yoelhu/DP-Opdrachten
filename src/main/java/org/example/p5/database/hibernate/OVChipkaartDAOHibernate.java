@@ -62,4 +62,10 @@ public class OVChipkaartDAOHibernate implements OVChipkaartDAO {
         session.getTransaction().commit();
         return ovChipkaarten;
     }
+
+    @Override
+    public OVChipkaart findById(int id) {
+        OVChipkaart ovChipkaartToReturn = session.get(OVChipkaart.class, id);
+        return ovChipkaartToReturn;
+    }
 }

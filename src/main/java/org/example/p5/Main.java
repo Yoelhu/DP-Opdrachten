@@ -2,6 +2,9 @@ package org.example.p5;
 
 import org.example.p5.database.*;
 import org.example.p5.database.hibernate.HibernateSession;
+import org.example.p5.database.hibernate.OVChipkaartDAOHibernate;
+import org.example.p5.database.hibernate.ProductDAOHibernate;
+import org.example.p5.database.hibernate.ReizigerDAOHibernate;
 import org.example.p5.database.interfaces.AdresDAO;
 import org.example.p5.database.interfaces.OVChipkaartDAO;
 import org.example.p5.database.interfaces.ProductDAO;
@@ -24,10 +27,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        testProductDAO(new OVChipkaartDAOPsql(getConnectionPSQL()),
-                new ProductDAOPsql(getConnectionPSQL()),
-                new ReizigerDAOPsql(getConnectionPSQL()));
-        closeConnectionPSQL();
+        testProductDAO(new OVChipkaartDAOHibernate(getHibernateSession()),
+                new ProductDAOHibernate(getHibernateSession()),
+                new ReizigerDAOHibernate(getHibernateSession()));
+        closeSessionHibernate();
     }
 
     private static void testReizigerDAO(ReizigerDAO rdao) throws SQLException {
@@ -266,12 +269,9 @@ public class Main {
 
 
         System.out.println("\nSave():");
-        Reiziger nieuweReiziger = new Reiziger(100, "Y", "el", "Ouamari", LocalDate.parse("2003-06-20"));
+        OVChipkaart ovChipkaart = ovChipkaartDAO.findById(18326);
         Product nieuwProduct = new Product(10, "Super Korting", "Als je rijk bent wordt je rijker", 100);
-        OVChipkaart nieuwOVChipkaart = new OVChipkaart(99999, LocalDate.parse("2050-01-01"), 2, 100, nieuweReiziger);
-        nieuwProduct.addOVChipkaart(nieuwOVChipkaart);
-        reizigerDAO.save(nieuweReiziger);
-        ovChipkaartDAO.save(nieuwOVChipkaart);
+        nieuwProduct.addOVChipkaart(ovChipkaart);
         productDAO.save(nieuwProduct);
         System.out.println(productDAO.findById(nieuwProduct));
 
@@ -279,7 +279,7 @@ public class Main {
         System.out.println(productDAO.findById(nieuwProduct));
 
         System.out.println("\nFindByOVChipKaart()");
-        System.out.println(productDAO.findByOvChipkaart(nieuwOVChipkaart));
+        System.out.println(productDAO.findByOvChipkaart(ovChipkaart));
 
         System.out.println("\nUpdate():");
         System.out.println("Product prijs voor update:");
@@ -296,8 +296,7 @@ public class Main {
         System.out.println("Product list size after delete:");
         System.out.println(productDAO.findAll().size());
 
-        ovChipkaartDAO.delete(nieuwOVChipkaart);
-        reizigerDAO.delete(nieuweReiziger);
+
     }
 
     private static String tussenvoegselCheck(Reiziger reiziger){

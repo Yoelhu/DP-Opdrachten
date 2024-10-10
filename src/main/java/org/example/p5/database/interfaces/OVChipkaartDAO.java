@@ -1,6 +1,7 @@
 package org.example.p5.database.interfaces;
 
 import org.example.p5.domain.OVChipkaart;
+import org.example.p5.domain.Product;
 import org.example.p5.domain.Reiziger;
 
 import java.sql.SQLException;
@@ -12,4 +13,5 @@ public interface OVChipkaartDAO {
     boolean delete(OVChipkaart ovChipkaart) throws SQLException;
     List<OVChipkaart> findByReiziger(Reiziger reiziger) throws SQLException;
     List<OVChipkaart> findAll() throws SQLException;
+    OVChipkaart findById(int id) throws SQLException;
 }
